@@ -186,7 +186,7 @@ async function AutoCheck(code, Name, Birth, region) {
     var url = region + 'hcs.eduro.go.kr';
     var Token = await findUser(code, Name, Birth, 'school', url);
     var Select = await selectUserGroup(Token.token, url);
-    var Info = await getUserInfo(Select[0].token, code, userPNo, url);
+    var Info = await getUserInfo(Select[0].token, code, Select[0].userPNo, url);
     serv = await Servey(Info.token, Token.userName, url);
     console.log(serv);
 
