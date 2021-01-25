@@ -6,25 +6,26 @@ const sql = require('mysql');
 const Fs = require('fs');
 
 var cn = sql.createConnection({
-    host: 'localhost',
+    host: '',
     user: '',
     password: '',
     database: ''
 });
 
 cn.connect();
-const work = cn.query('SELECT * FROM `table` WHERE `Name` IS NOT NULL',
+const work = cn.query('SELECT * FROM `iplist` WHERE `CovName` IS NOT NULL',
     function(err, rows, fields) {
         if (err) {
             console.log(err);
         } else {
             for (var i = 0; i < rows.length; i++) {
-                // console.log(rows[i].Name);
-                code = rows[i].School;
-                hksengn = rows[i].Name;
-                hsbirth = rows[i].Birth;
-                reg = rows[i].Region;
-                AutoCheck(code, hksengn, hsbirth, reg).catch;
+                // console.log(rows[i].CovName);
+                code = rows[i].CovSchool;
+                hksengn = rows[i].CovName;
+                hsbirth = rows[i].CovBirth;
+                reg = rows[i].CovRegion;
+                pw = rows[i].register;
+                AutoCheck(code, hksengn, hsbirth, reg, pw).catch;
             }
         }
     });
@@ -82,7 +83,7 @@ validatePassword = (token, password, url) => new Promise((resolve, reject) => re
     },
     json: {
         deviceUuid: "",
-        password: crypto.encrypt(password, url)
+        password: password
     }
 }, function(err, res, body) {
     if (err) reject(err);
@@ -140,9 +141,17 @@ Servey = (token, username, url) => new Promise((resolve, reject) =>
             //return "1" === rspns01 && "1" === rspns02 && "0" === rspns09 ? rspns00 = "Y" : rspns00 = "N"
 
             rspns01: "1",
-            
+            //학생 본인이 37.5℃ 이상 발열 또는 발열감이 있나요?
+            //단, 기저질환 등으로 코로나19와 관계없이 평소에 발열 증상이 계속되는 경우는 제외
+            //1 : 아니요
+            //2 : 예
+
+            //학생에게 코로나19가 의심되는 아래의 임상증상*이 있나요?
+            //*(주요 임상증상) 기침, 호흡곤란, 오한, 근육통, 두통, 인후통, 후각·미각 소실 또는 폐렴
+            //단, 기저질환 등으로 코로나19와 관계없이 평소에 다음 증상이 계속되는 경우는 제외
             rspns02: "1",
-           
+            //1: 아니요
+            //0: 예
 
             rspns03: null,
             //Unknown
@@ -158,7 +167,11 @@ Servey = (token, username, url) => new Promise((resolve, reject) =>
             //Unknown
 
             rspns09: "0",
-           
+            //학생 본인 또는 동거인이 방역당국에 의해 현재 자가격리가 이루어지고 있나요?
+            //※ <방역당국 지침> 최근 14일 이내 해외 입국자, 확진자와 접촉자 등은 자가격리 조치
+            //단, 직업특성상 잦은 해외 입·출국으로 의심증상이 없는 경우 자가격리 면제
+            //0 : 아니요
+            //1 : 예
 
             rspns10: null,
             //Unknown
@@ -181,16 +194,17 @@ Servey = (token, username, url) => new Promise((resolve, reject) =>
         resolve(JSON.stringify(res));
     }));
 
-async function AutoCheck(code, Name, Birth, region) {
+async function AutoCheck(code, Name, Birth, region, password) {
     //var School = await SearchSchool(lctnScCode, schoolName);
     var url = region + 'hcs.eduro.go.kr';
     var Token = await findUser(code, Name, Birth, 'school', url);
-    var Select = await selectUserGroup(Token.token, url);
+    var Pass = await validatePassword(Token.token, password, url);
+    var Select = await selectUserGroup(Pass, url);
     var Info = await getUserInfo(Select[0].token, code, Select[0].userPNo, url);
     serv = await Servey(Info.token, Token.userName, url);
     console.log(serv);
 
-    var u = './check.log';
+    var u = 'check.log';
     Fs.appendFile(u, Name + serv + '\n', function(err) {
         if (err) console.log(err);
         else console.log('로그 기록 완료');
