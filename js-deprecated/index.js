@@ -1,4 +1,4 @@
-const requestp = require("request-promise");
+const raon = require('./raon');
 const request = require("request");
 const JSEncrypt = require('node-jsencrypt');
 const crypto = new JSEncrypt();
@@ -82,8 +82,9 @@ validatePassword = (token, password, url) => new Promise((resolve, reject) => re
         'Referer': 'https://hcs.eduro.go.kr/'
     },
     json: {
-        deviceUuid: "",
-        password: password
+        deviceUuid: '',
+        makeSession: true,
+        password: await raon(password)
     }
 }, function(err, res, body) {
     if (err) reject(err);
