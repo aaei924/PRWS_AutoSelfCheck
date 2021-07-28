@@ -84,7 +84,7 @@ validatePassword = (token, password, url) => new Promise((resolve, reject) => re
     json: {
         deviceUuid: '',
         makeSession: true,
-        password: await raon(password)
+        password: raon(password)
     }
 }, function(err, res, body) {
     if (err) reject(err);
