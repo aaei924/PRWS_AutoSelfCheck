@@ -3,7 +3,7 @@
 PRWS.kr 자동 자가진단 소스
 
 https://github.com/kimcore/hcs.js
-kimcore 님의 소스코드를 일부 사용하였습니다. (raon.js)
+kimcore 님의 소스코드를 일부 사용하였습니다. (raon.js 등)
 
 ## Servey 인자 정보
 Rspns 01: 학생 본인이 37.5℃ 이상 발열 또는 발열감이 있나요?
