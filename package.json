@@ -1,0 +1,26 @@
+{
+  "name": "prws-hcs",
+  "keywords": ["prws"],
+  "author": {
+      "name": "PRASEOD-",
+      "email": "admin@prws.kr",
+      "url": "https://github.com/aaei924"
+  }
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aaei924/PRWS_AutoSelfCheck.git"
+  },
+  "homepage": "https://github.com/aaei924/PRWS_AutoSelfCheck",
+  "license": "MIT",
+  "description": "Automatic Self-Check Library of PRWS",
+  "version": "0.21.7",
+  "dependencies": {
+    "crypto-js": "^4.1.1",
+    "fetch-cookie": "^1.0.0",
+    "fs": "^0.0.1-security",
+    "get-random-values": "^1.2.2",
+    "jsbn": "^1.1.0",
+    "node-fetch": "^2.6.1",
+  }
+}
